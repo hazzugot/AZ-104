@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AZ-104 Platform — Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          azure: {
+            50:'#eef6ff',100:'#d9eaff',500:'#0078d4',600:'#106ebe',700:'#005a9e',900:'#003a73'
+          }
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .tab-active { background: rgb(15 23 42); color: white; }
+  .heat-cell { transition: transform .12s ease; }
+  .heat-cell:hover { transform: scale(1.15); }
+  .card { background: rgb(17 24 39); border: 1px solid rgb(30 41 59); }
+  .pill { background: rgb(30 41 59); }
+  .gradient-bar { background: linear-gradient(90deg, #0078d4, #00bcf2); }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .typing::after { content: '▍'; animation: blink 1s infinite; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- Top nav -->
+<header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex h-7 w-7 items-center justify-center rounded bg-azure-500 text-white text-xs font-bold">AZ</span>
+      <span class="font-semibold">AZ-104 Platform</span>
+      <span class="ml-2 px-2 py-0.5 rounded-full bg-slate-800 text-[10px] uppercase tracking-wider text-slate-400">preview</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-1 text-sm">
+      <button data-tab="dashboard"  class="tab tab-active rounded-md px-3 py-1.5">Dashboard</button>
+      <button data-tab="learn"      class="tab rounded-md px-3 py-1.5 text-slate-400 hover:text-white">Learn</button>
+      <button data-tab="practice"   class="tab rounded-md px-3 py-1.5 text-slate-400 hover:text-white">Practice</button>
+      <button data-tab="flashcards" class="tab rounded-md px-3 py-1.5 text-slate-400 hover:text-white">Flashcards</button>
+      <button data-tab="tutor"      class="tab rounded-md px-3 py-1.5 text-slate-400 hover:text-white">AI Tutor</button>
+      <button data-tab="admin"      class="tab rounded-md px-3 py-1.5 text-slate-400 hover:text-white">Admin</button>
+    </nav>
+    <div class="flex items-center gap-2">
+      <span class="hidden sm:inline px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs">🔥 7-day streak</span>
+      <span class="h-8 w-8 rounded-full bg-azure-500 flex items-center justify-center text-xs font-bold">JS</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+<!-- ====== DASHBOARD ====== -->
+<section data-pane="dashboard">
+  <h1 class="text-3xl font-bold tracking-tight">Welcome back, Jordan</h1>
+  <p class="text-slate-400 mt-1">Exam target: <span class="text-white">14 June 2026</span> · 26 days to go</p>
+
+  <div class="grid gap-4 md:grid-cols-4 mt-8">
+    <div class="card rounded-lg p-5">
+      <div class="text-xs uppercase tracking-wide text-slate-400">Streak</div>
+      <div class="mt-2 text-3xl font-semibold">7 days</div>
+      <div class="text-xs text-slate-500 mt-1">Keep it going</div>
+    </div>
+    <div class="card rounded-lg p-5">
+      <div class="text-xs uppercase tracking-wide text-slate-400">Cards due</div>
+      <div class="mt-2 text-3xl font-semibold">23</div>
+      <div class="text-xs text-slate-500 mt-1">Spaced repetition</div>
+    </div>
+    <div class="card rounded-lg p-5">
+      <div class="text-xs uppercase tracking-wide text-slate-400">Overall mastery</div>
+      <div class="mt-2 text-3xl font-semibold">67%</div>
+      <div class="text-xs text-slate-500 mt-1">+4% this week</div>
+    </div>
+    <div class="card rounded-lg p-5">
+      <div class="text-xs uppercase tracking-wide text-slate-400">Practice score (avg)</div>
+      <div class="mt-2 text-3xl font-semibold">712 <span class="text-emerald-400 text-base">/ 1000</span></div>
+      <div class="text-xs text-emerald-400 mt-1">Above pass line (700)</div>
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3 mt-8">
+    <div class="card rounded-lg p-6 lg:col-span-2">
+      <div class="flex items-center justify-between">
+        <h2 class="font-semibold">Mastery by exam objective</h2>
+        <span class="text-xs text-slate-500">Updated 12 min ago</span>
+      </div>
+      <div class="mt-5 space-y-4">
+        <div>
+          <div class="flex justify-between text-sm"><span>Identity &amp; Governance <span class="text-slate-500">· 22.5%</span></span><span class="text-slate-400">74%</span></div>
+          <div class="mt-1 h-2 rounded bg-slate-800"><div class="h-full rounded gradient-bar" style="width:74%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm"><span>Storage <span class="text-slate-500">· 17.5%</span></span><span class="text-slate-400">81%</span></div>
+          <div class="mt-1 h-2 rounded bg-slate-800"><div class="h-full rounded gradient-bar" style="width:81%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm"><span>Compute <span class="text-slate-500">· 22.5%</span></span><span class="text-slate-400">68%</span></div>
+          <div class="mt-1 h-2 rounded bg-slate-800"><div class="h-full rounded gradient-bar" style="width:68%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm"><span>Virtual Networking <span class="text-slate-500">· 17.5%</span></span><span class="text-rose-400">52%</span></div>
+          <div class="mt-1 h-2 rounded bg-slate-800"><div class="h-full rounded gradient-bar" style="width:52%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm"><span>Monitoring &amp; Backup <span class="text-slate-500">· 12.5%</span></span><span class="text-amber-400">61%</span></div>
+          <div class="mt-1 h-2 rounded bg-slate-800"><div class="h-full rounded gradient-bar" style="width:61%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rounded-lg p-6">
+      <h2 class="font-semibold">Activity heatmap</h2>
+      <p class="text-xs text-slate-500 mt-1">Last 12 weeks</p>
+      <div id="heatmap" class="mt-4 grid gap-1" style="grid-template-columns: repeat(12, minmax(0,1fr))"></div>
+      <div class="mt-3 flex items-center gap-2 text-[10px] text-slate-500">
+        <span>less</span>
+        <span class="h-3 w-3 rounded-sm bg-slate-800"></span>
+        <span class="h-3 w-3 rounded-sm bg-azure-700/40"></span>
+        <span class="h-3 w-3 rounded-sm bg-azure-500/60"></span>
+        <span class="h-3 w-3 rounded-sm bg-azure-500"></span>
+        <span>more</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 mt-8">
+    <div class="card rounded-lg p-6">
+      <h2 class="font-semibold">Next up — AI recommendations</h2>
+      <ul class="mt-4 space-y-3 text-sm">
+        <li class="rounded-md border border-slate-800 p-3 hover:border-azure-500 cursor-pointer">
+          <div class="flex justify-between"><span class="font-medium">VNet peering &amp; transit routing</span><span class="text-rose-400 text-xs">weak area</span></div>
+          <div class="text-xs text-slate-500 mt-1">Lift Virtual Networking (52%)</div>
+        </li>
+        <li class="rounded-md border border-slate-800 p-3 hover:border-azure-500 cursor-pointer">
+          <div class="flex justify-between"><span class="font-medium">Azure Backup recovery points</span><span class="text-amber-400 text-xs">medium</span></div>
+          <div class="text-xs text-slate-500 mt-1">Lift Monitoring &amp; Backup (61%)</div>
+        </li>
+        <li class="rounded-md border border-slate-800 p-3 hover:border-azure-500 cursor-pointer">
+          <div class="flex justify-between"><span class="font-medium">Lab: Application Gateway with WAF</span><span class="text-azure-500 text-xs">lab</span></div>
+          <div class="text-xs text-slate-500 mt-1">35 min · hands-on</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card rounded-lg p-6">
+      <h2 class="font-semibold">Recent practice exams</h2>
+      <ul class="mt-4 divide-y divide-slate-800 text-sm">
+        <li class="flex justify-between py-3"><span>Full timed mock #4</span><span class="text-emerald-400">741 PASS</span></li>
+        <li class="flex justify-between py-3"><span>Weak-area drill: networking</span><span class="text-rose-400">612 FAIL</span></li>
+        <li class="flex justify-between py-3"><span>Adaptive 25</span><span class="text-emerald-400">728 PASS</span></li>
+        <li class="flex justify-between py-3"><span>Storage objective set</span><span class="text-emerald-400">802 PASS</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====== LEARN ====== -->
+<section data-pane="learn" class="hidden">
+  <h1 class="text-3xl font-bold tracking-tight">Curriculum</h1>
+  <p class="text-slate-400 mt-1">Five exam objectives. Sourced from the official Microsoft Learn AZ-104 path.</p>
+  <div class="grid md:grid-cols-2 gap-4 mt-8" id="modules"></div>
+</section>
+
+<!-- ====== PRACTICE ====== -->
+<section data-pane="practice" class="hidden">
+  <h1 class="text-3xl font-bold tracking-tight">Practice exam — Full timed mock</h1>
+  <p class="text-slate-400 mt-1">120 minutes · 50 items · Microsoft 1-1000 scaling</p>
+
+  <div class="grid gap-6 lg:grid-cols-[1fr_280px] mt-8">
+    <div class="card rounded-lg p-6">
+      <div class="flex justify-between text-sm text-slate-400">
+        <span>Question <span class="text-white" id="q-num">14</span> / 50</span>
+        <span>virtual networking · medium</span>
+      </div>
+
+      <div class="mt-4 rounded-md bg-slate-800/60 p-3 text-sm">
+        <span class="text-slate-400 uppercase tracking-wide text-[10px]">case study</span><br>
+        Contoso operates an Azure hub-and-spoke topology. The hub VNet (HubVNet) contains an Azure Firewall and is peered to two spokes (Spoke1, Spoke2). Spoke1 and Spoke2 are not peered to each other.
+      </div>
+
+      <p class="mt-4 text-base font-medium">
+        Resources in Spoke1 cannot reach resources in Spoke2 even though both spokes peer with HubVNet.
+        You verify that all NSG rules permit the traffic and that Azure Firewall has an explicit allow rule.
+        You need to identify the most likely cause. <span class="text-slate-400">What should you check next?</span>
+      </p>
+
+      <ul class="mt-6 space-y-2">
+        <li><button class="answer w-full text-left rounded-md border border-slate-800 p-3 text-sm hover:bg-slate-800"><span class="font-mono mr-2">A.</span>Whether VNet peering on each spoke has "Allow gateway transit" enabled.</button></li>
+        <li><button class="answer w-full text-left rounded-md border border-azure-500 bg-azure-500/10 p-3 text-sm"><span class="font-mono mr-2">B.</span>Whether each spoke has a User Defined Route forcing 0.0.0.0/0 to the Azure Firewall.</button></li>
+        <li><button class="answer w-full text-left rounded-md border border-slate-800 p-3 text-sm hover:bg-slate-800"><span class="font-mono mr-2">C.</span>Whether Azure DDoS Protection Standard is enabled on the hub.</button></li>
+        <li><button class="answer w-full text-left rounded-md border border-slate-800 p-3 text-sm hover:bg-slate-800"><span class="font-mono mr-2">D.</span>Whether the spoke subnets use service endpoints for Microsoft.Storage.</button></li>
+      </ul>
+
+      <div class="mt-6 flex items-center justify-between text-sm">
+        <button class="rounded-md border border-slate-800 px-3 py-1.5">← Previous</button>
+        <button class="rounded-md border border-amber-500/40 text-amber-400 px-3 py-1.5">⚑ Flag</button>
+        <button class="rounded-md bg-azure-500 px-3 py-1.5 text-white">Next →</button>
+      </div>
+    </div>
+
+    <aside class="space-y-4">
+      <div class="card rounded-lg p-4 text-center">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Time left</div>
+        <div class="mt-1 text-2xl font-mono" id="timer">87:42</div>
+      </div>
+      <div class="card rounded-lg p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-400 mb-2">Question map</div>
+        <div id="qmap" class="grid grid-cols-8 gap-1"></div>
+      </div>
+      <div class="card rounded-lg p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-400">Confidence</div>
+        <div class="mt-2 flex gap-1">
+          <button class="h-7 w-7 rounded bg-slate-800 text-xs">1</button>
+          <button class="h-7 w-7 rounded bg-slate-800 text-xs">2</button>
+          <button class="h-7 w-7 rounded bg-azure-500 text-xs">3</button>
+          <button class="h-7 w-7 rounded bg-slate-800 text-xs">4</button>
+          <button class="h-7 w-7 rounded bg-slate-800 text-xs">5</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ====== FLASHCARDS ====== -->
+<section data-pane="flashcards" class="hidden">
+  <h1 class="text-3xl font-bold tracking-tight">Flashcards</h1>
+  <p class="text-slate-400 mt-1">23 cards due. SM-2 spaced repetition.</p>
+
+  <div class="mx-auto max-w-xl mt-10">
+    <div class="text-sm text-slate-400 mb-4">Card 4 / 23</div>
+    <div id="card" class="card min-h-[280px] rounded-xl p-8 text-center cursor-pointer border-2">
+      <div id="card-side" class="text-xs uppercase tracking-wide text-slate-500">Question</div>
+      <p id="card-text" class="mt-5 text-lg">Which Azure role is required to delete a resource lock?</p>
+      <p id="card-hint" class="hidden mt-6 text-sm italic text-slate-500">💡 Locks ≠ permissions — only Owner/UAA can manage them.</p>
+      <p class="mt-6 text-xs text-slate-600">click to flip</p>
+    </div>
+    <div id="card-grades" class="hidden mt-6 grid grid-cols-6 gap-2 text-xs font-medium text-white">
+      <button class="rounded-md py-2 bg-red-500/80">Blackout</button>
+      <button class="rounded-md py-2 bg-red-400/80">Wrong</button>
+      <button class="rounded-md py-2 bg-orange-400/80">Hard</button>
+      <button class="rounded-md py-2 bg-yellow-400/80 text-slate-900">OK</button>
+      <button class="rounded-md py-2 bg-emerald-400/80 text-slate-900">Good</button>
+      <button class="rounded-md py-2 bg-emerald-600/80">Easy</button>
+    </div>
+  </div>
+</section>
+
+<!-- ====== TUTOR ====== -->
+<section data-pane="tutor" class="hidden">
+  <h1 class="text-3xl font-bold tracking-tight">AI Tutor</h1>
+  <p class="text-slate-400 mt-1">Claude Sonnet · grounded in Microsoft Learn · aware of your weak areas</p>
+
+  <div class="card rounded-lg mt-8 grid grid-rows-[1fr_auto] h-[65vh]">
+    <div id="chat" class="overflow-y-auto p-6 space-y-3 text-sm">
+      <div class="bg-slate-800 rounded-lg p-3 max-w-[80%]">
+        I noticed Virtual Networking is your weakest objective (52%). Want me to drill into VNet peering and UDRs, or jump to load balancing?
+      </div>
+      <div class="ml-auto bg-azure-500 text-white rounded-lg p-3 max-w-[80%]">
+        Explain when I need a UDR vs when system routes are enough.
+      </div>
+      <div class="bg-slate-800 rounded-lg p-3 max-w-[80%]">
+        <p>Short answer: <strong>system routes cover the common cases. You add a UDR when you need to override them.</strong></p>
+        <p class="mt-3">Azure automatically creates system routes for:</p>
+        <ul class="list-disc pl-5 mt-1 space-y-1">
+          <li>Traffic <em>within</em> a VNet (any subnet ↔ any subnet)</li>
+          <li>Traffic to peered VNets</li>
+          <li>Traffic to the internet (default 0.0.0.0/0)</li>
+          <li>Traffic to on-premises via VPN/ExpressRoute (when a gateway is connected)</li>
+        </ul>
+        <p class="mt-3">You write a UDR when you must <strong>force traffic somewhere specific</strong>, most often:</p>
+        <ol class="list-decimal pl-5 mt-1 space-y-1">
+          <li>Forced tunnelling internet egress through Azure Firewall / an NVA (<code class="bg-slate-900 px-1 rounded">0.0.0.0/0 → 10.0.1.4</code>)</li>
+          <li>Hub-and-spoke spoke-to-spoke through a hub NVA (peering alone won't transit)</li>
+          <li>Blackholing a specific prefix (<code class="bg-slate-900 px-1 rounded">next hop: None</code>)</li>
+        </ol>
+        <p class="mt-3"><strong>Exam trap:</strong> spoke-to-spoke through a hub firewall <em>always</em> needs UDRs on both spokes — VNet peering is non-transitive.</p>
+        <p class="mt-3 text-xs text-slate-400">Sources: [1] Virtual network traffic routing, [2] Hub-spoke topology reference architecture.</p>
+      </div>
+      <div class="bg-slate-800 rounded-lg p-3 max-w-[80%]"><span class="typing">Generating follow-up questions to drill this</span></div>
+    </div>
+    <form class="flex items-center gap-2 border-t border-slate-800 p-3" onsubmit="event.preventDefault()">
+      <input class="flex-1 rounded-md bg-slate-950 border border-slate-800 px-3 py-2 text-sm" placeholder="Ask about AZ-104..." />
+      <button class="h-9 px-4 rounded-md bg-azure-500 text-sm">Send</button>
+    </form>
+  </div>
+</section>
+
+<!-- ====== ADMIN ====== -->
+<section data-pane="admin" class="hidden">
+  <h1 class="text-3xl font-bold tracking-tight">Admin</h1>
+  <p class="text-slate-400 mt-1">Operational control plane</p>
+
+  <div class="grid md:grid-cols-4 gap-4 mt-8">
+    <div class="card rounded-lg p-5"><div class="text-xs uppercase text-slate-400">Users</div><div class="text-2xl font-semibold mt-1">1,284</div></div>
+    <div class="card rounded-lg p-5"><div class="text-xs uppercase text-slate-400">Questions pending review</div><div class="text-2xl font-semibold mt-1">47</div></div>
+    <div class="card rounded-lg p-5"><div class="text-xs uppercase text-slate-400">Transcripts pending</div><div class="text-2xl font-semibold mt-1">12</div></div>
+    <div class="card rounded-lg p-5"><div class="text-xs uppercase text-slate-400">AI spend (30d)</div><div class="text-2xl font-semibold mt-1">$84.32</div><div class="text-xs text-slate-500 mt-1">3.2M in / 1.1M out tokens</div></div>
+  </div>
+
+  <div class="card rounded-lg mt-8 overflow-hidden">
+    <div class="px-5 py-3 border-b border-slate-800 flex justify-between items-center">
+      <h2 class="font-semibold">Recent scrape jobs</h2>
+      <button class="text-xs rounded-md bg-azure-500 px-3 py-1.5">+ Schedule scrape</button>
+    </div>
+    <table class="w-full text-sm">
+      <thead class="bg-slate-900/50 text-left text-slate-400">
+        <tr><th class="p-3">URL</th><th class="p-3">Kind</th><th class="p-3">Status</th><th class="p-3">Attempts</th><th class="p-3">Updated</th></tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800">
+        <tr><td class="p-3 font-mono text-xs">/training/modules/configure-azure-policy</td><td class="p-3">module</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-xs">completed</span></td><td class="p-3">1</td><td class="p-3 text-slate-400">2m ago</td></tr>
+        <tr><td class="p-3 font-mono text-xs">/training/modules/configure-storage-accounts</td><td class="p-3">module</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-azure-500/10 text-azure-500 text-xs">processing</span></td><td class="p-3">1</td><td class="p-3 text-slate-400">just now</td></tr>
+        <tr><td class="p-3 font-mono text-xs">/training/modules/manage-virtual-networks</td><td class="p-3">module</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-xs">retrying</span></td><td class="p-3">3</td><td class="p-3 text-slate-400">8m ago</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="max-w-7xl mx-auto px-6 py-10 text-center text-xs text-slate-500">
+  Static preview · the live app is in <code class="bg-slate-900 px-1.5 py-0.5 rounded">src/</code>. Run <code class="bg-slate-900 px-1.5 py-0.5 rounded">npm run dev</code> for the full Next.js experience.
+</footer>
+
+</main>
+
+<script>
+  // --- Tab routing ---
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => {
+        b.classList.remove('tab-active');
+        b.classList.add('text-slate-400');
+      });
+      btn.classList.add('tab-active');
+      btn.classList.remove('text-slate-400');
+      const target = btn.dataset.tab;
+      document.querySelectorAll('[data-pane]').forEach(p => p.classList.toggle('hidden', p.dataset.pane !== target));
+    });
+  });
+
+  // --- Heatmap ---
+  const heatmap = document.getElementById('heatmap');
+  for (let w = 0; w < 12; w++) {
+    for (let d = 0; d < 7; d++) {
+      const intensity = Math.random();
+      const cls = intensity < 0.2 ? 'bg-slate-800'
+                : intensity < 0.45 ? 'bg-azure-700/40'
+                : intensity < 0.75 ? 'bg-azure-500/60'
+                : 'bg-azure-500';
+      const cell = document.createElement('div');
+      cell.className = `heat-cell h-3 w-3 rounded-sm ${cls}`;
+      cell.title = `Week ${w+1}, day ${d+1}`;
+      heatmap.appendChild(cell);
+    }
+  }
+
+  // --- Modules ---
+  const modules = [
+    { obj:'Identity & Governance', weight:'22.5%', title:'Manage Azure identities and governance', units:5, summary:'Microsoft Entra ID, users, groups, RBAC, subscriptions, and Azure Policy.', focus:true },
+    { obj:'Storage', weight:'17.5%', title:'Implement and manage storage', units:4, summary:'Storage accounts, blob/file/queue, access tiers, lifecycle, AzCopy, File Sync.', focus:true },
+    { obj:'Compute', weight:'22.5%', title:'Deploy and manage Azure compute resources', units:5, summary:'Virtual machines, scale sets, availability, App Service, AKS.', focus:true },
+    { obj:'Virtual Networking', weight:'17.5%', title:'Implement and manage virtual networking', units:4, summary:'VNets, subnets, NSGs, routing, peering, VPN/ExpressRoute, Application Gateway.', focus:true },
+    { obj:'Monitoring & Backup', weight:'12.5%', title:'Monitor and maintain Azure resources', units:4, summary:'Azure Monitor, Log Analytics, alerts, Azure Backup, Site Recovery.', focus:false },
+  ];
+  document.getElementById('modules').innerHTML = modules.map(m => `
+    <a class="card rounded-lg p-5 hover:border-azure-500 transition-colors">
+      <div class="flex justify-between text-xs uppercase tracking-wide text-slate-400">
+        <span>${m.obj}</span><span>${m.weight} of exam</span>
+      </div>
+      <h3 class="mt-2 font-semibold">${m.title}</h3>
+      <p class="mt-2 text-sm text-slate-400 line-clamp-2">${m.summary}</p>
+      <div class="mt-4 flex justify-between text-xs text-slate-500">
+        <span>${m.units} units</span>
+        ${m.focus ? '<span class="text-amber-400">⚡ Exam-focus enabled</span>' : '<span>AI-enhanced</span>'}
+      </div>
+    </a>`).join('');
+
+  // --- Question map ---
+  const qmap = document.getElementById('qmap');
+  for (let i = 1; i <= 50; i++) {
+    const answered = Math.random() < 0.4;
+    const flagged = i === 9 || i === 27;
+    const isCur = i === 14;
+    const cls = isCur ? 'bg-azure-500 text-white'
+              : answered ? 'bg-emerald-500/30 text-emerald-200'
+              : 'bg-slate-800 text-slate-400';
+    const ring = flagged ? 'ring-2 ring-amber-500' : '';
+    qmap.innerHTML += `<button class="h-7 rounded text-xs ${cls} ${ring}">${i}</button>`;
+  }
+
+  // --- Timer countdown ---
+  let t = 87 * 60 + 42;
+  const timerEl = document.getElementById('timer');
+  setInterval(() => {
+    t = Math.max(0, t - 1);
+    const m = Math.floor(t / 60), s = t % 60;
+    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+
+  // --- Flashcard flip ---
+  const card = document.getElementById('card');
+  const cardText = document.getElementById('card-text');
+  const cardSide = document.getElementById('card-side');
+  const cardHint = document.getElementById('card-hint');
+  const cardGrades = document.getElementById('card-grades');
+  let flipped = false;
+  card.addEventListener('click', () => {
+    flipped = !flipped;
+    if (flipped) {
+      cardSide.textContent = 'Answer';
+      cardText.textContent = 'Owner or User Access Administrator. Even Contributor cannot remove locks.';
+      cardHint.classList.remove('hidden');
+      cardGrades.classList.remove('hidden');
+      card.classList.add('border-emerald-500/40');
+    } else {
+      cardSide.textContent = 'Question';
+      cardText.textContent = 'Which Azure role is required to delete a resource lock?';
+      cardHint.classList.add('hidden');
+      cardGrades.classList.add('hidden');
+      card.classList.remove('border-emerald-500/40');
+    }
+  });
+</script>
+</body>
+</html>
