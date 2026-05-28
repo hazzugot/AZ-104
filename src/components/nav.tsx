@@ -4,8 +4,9 @@ import { ModeToggle } from "./mode-toggle";
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/learn", label: "Learn" },
-  { href: "/practice", label: "Practice exams" },
+  { href: "/practice", label: "Practice" },
   { href: "/flashcards", label: "Flashcards" },
+  { href: "/study-plan", label: "Study plan" },
   { href: "/tutor", label: "AI tutor" },
 ];
 

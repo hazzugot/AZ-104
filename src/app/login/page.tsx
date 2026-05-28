@@ -46,6 +46,10 @@ export default function LoginPage() {
           >
             Sign in
           </button>
+          <p className="text-center text-xs text-muted-foreground">
+            No account?{" "}
+            <a href="/register" className="underline">Create one</a>
+          </p>
         </form>
       </main>
     </div>

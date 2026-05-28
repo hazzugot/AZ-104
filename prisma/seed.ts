@@ -1,104 +1,39 @@
 /**
- * Seeds the AZ-104 platform with the canonical exam objective taxonomy and
- * a small starter set of curated modules/units so the UI is functional before
- * the Microsoft Learn scraper has run.
+ * Seed the AZ-104 platform with the canonical curriculum, a curated exam
+ * question bank, flashcards, and lab guides. Safe to re-run — every write
+ * uses upsert semantics.
  */
-import { PrismaClient, ExamObjective, UnitKind, ContentLevel } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { CURRICULUM } from "./data/curriculum";
+import { QUESTIONS } from "./data/questions";
+import { FLASHCARDS } from "./data/flashcards";
+import { LABS } from "./data/labs";
 
 const prisma = new PrismaClient();
 
-const MODULES = [
-  {
-    slug: "manage-azure-identities-governance",
-    title: "Manage Azure identities and governance",
-    summary:
-      "Microsoft Entra ID, users, groups, licenses, external identities, RBAC, subscriptions, and Azure Policy.",
-    objective: ExamObjective.IDENTITIES_GOVERNANCE,
-    examWeight: 0.225,
-    units: [
-      { slug: "microsoft-entra-id", title: "Microsoft Entra ID fundamentals", kind: UnitKind.LESSON },
-      { slug: "users-and-groups", title: "Manage users and groups", kind: UnitKind.LESSON },
-      { slug: "rbac", title: "Azure role-based access control", kind: UnitKind.LESSON },
-      { slug: "azure-policy", title: "Azure Policy and governance", kind: UnitKind.LESSON },
-      { slug: "lab-assign-roles", title: "Lab: Assign Azure roles", kind: UnitKind.LAB },
-    ],
-  },
-  {
-    slug: "implement-manage-storage",
-    title: "Implement and manage storage",
-    summary:
-      "Storage accounts, blob/file/queue services, access tiers, lifecycle, AzCopy, Azure Files, Azure File Sync.",
-    objective: ExamObjective.STORAGE,
-    examWeight: 0.175,
-    units: [
-      { slug: "storage-accounts", title: "Create and configure storage accounts", kind: UnitKind.LESSON },
-      { slug: "blob-storage", title: "Azure Blob Storage", kind: UnitKind.LESSON },
-      { slug: "azure-files", title: "Azure Files and File Sync", kind: UnitKind.LESSON },
-      { slug: "lab-azcopy", title: "Lab: Move data with AzCopy", kind: UnitKind.LAB },
-    ],
-  },
-  {
-    slug: "deploy-manage-compute",
-    title: "Deploy and manage Azure compute resources",
-    summary:
-      "Virtual machines, scale sets, availability, App Service, container instances, AKS.",
-    objective: ExamObjective.COMPUTE,
-    examWeight: 0.225,
-    units: [
-      { slug: "vms", title: "Provision virtual machines", kind: UnitKind.LESSON },
-      { slug: "vmss", title: "Virtual Machine Scale Sets", kind: UnitKind.LESSON },
-      { slug: "app-service", title: "Azure App Service", kind: UnitKind.LESSON },
-      { slug: "aks", title: "Azure Kubernetes Service overview", kind: UnitKind.LESSON },
-      { slug: "lab-deploy-vm", title: "Lab: Deploy a VM with availability zones", kind: UnitKind.LAB },
-    ],
-  },
-  {
-    slug: "implement-manage-virtual-networking",
-    title: "Implement and manage virtual networking",
-    summary:
-      "VNets, subnets, NSGs, routing, peering, VPN/ExpressRoute, public IPs, DNS, load balancers, Application Gateway.",
-    objective: ExamObjective.VIRTUAL_NETWORKING,
-    examWeight: 0.175,
-    units: [
-      { slug: "vnets", title: "Virtual networks and subnets", kind: UnitKind.LESSON },
-      { slug: "nsg", title: "Network Security Groups", kind: UnitKind.LESSON },
-      { slug: "load-balancer", title: "Azure Load Balancer", kind: UnitKind.LESSON },
-      { slug: "vpn-er", title: "VPN Gateway and ExpressRoute", kind: UnitKind.LESSON },
-    ],
-  },
-  {
-    slug: "monitor-maintain-azure",
-    title: "Monitor and maintain Azure resources",
-    summary:
-      "Azure Monitor, Log Analytics, alerts, Application Insights, Azure Backup, Site Recovery.",
-    objective: ExamObjective.MONITORING_BACKUP,
-    examWeight: 0.125,
-    units: [
-      { slug: "azure-monitor", title: "Azure Monitor and Log Analytics", kind: UnitKind.LESSON },
-      { slug: "alerts", title: "Alerts and action groups", kind: UnitKind.LESSON },
-      { slug: "backup", title: "Azure Backup", kind: UnitKind.LESSON },
-      { slug: "asr", title: "Azure Site Recovery", kind: UnitKind.LESSON },
-    ],
-  },
-];
-
 async function main() {
-  console.log("Seeding AZ-104 curriculum taxonomy...");
+  console.log("→ Seeding AZ-104 platform content");
 
+  // ── Learning Path ────────────────────────────────────────────────────
   const path = await prisma.learningPath.upsert({
     where: { slug: "az-104" },
     create: {
       slug: "az-104",
       title: "AZ-104: Microsoft Azure Administrator",
       description:
-        "Official AZ-104 exam track. Covers identity & governance, storage, compute, networking, and monitoring.",
+        "Official AZ-104 exam track. Identity & governance, storage, compute, networking, monitoring.",
       sourceUrl: "https://learn.microsoft.com/training/courses/az-104t00",
       orderIndex: 0,
     },
     update: {},
   });
+  console.log(`  ✓ Learning Path: ${path.title}`);
 
-  for (const [i, m] of MODULES.entries()) {
+  // ── Modules + Units ─────────────────────────────────────────────────
+  let modCount = 0;
+  let unitCount = 0;
+  let kcCount = 0;
+  for (const [mi, m] of CURRICULUM.entries()) {
     const mod = await prisma.module.upsert({
       where: { slug: m.slug },
       create: {
@@ -106,48 +41,187 @@ async function main() {
         title: m.title,
         summary: m.summary,
         objective: m.objective,
-        level: ContentLevel.INTERMEDIATE,
+        level: m.level,
         examWeight: m.examWeight,
-        orderIndex: i,
+        orderIndex: mi,
         pathId: path.id,
+        sourceUrl: m.sourceUrl,
       },
       update: {
         title: m.title,
         summary: m.summary,
         examWeight: m.examWeight,
-        orderIndex: i,
+        orderIndex: mi,
         pathId: path.id,
+        sourceUrl: m.sourceUrl,
+        level: m.level,
       },
     });
+    modCount++;
 
-    for (const [j, u] of m.units.entries()) {
-      await prisma.unit.upsert({
+    for (const [ui, u] of m.units.entries()) {
+      const unit = await prisma.unit.upsert({
         where: { moduleId_slug: { moduleId: mod.id, slug: u.slug } },
         create: {
           moduleId: mod.id,
           slug: u.slug,
           title: u.title,
           kind: u.kind,
-          orderIndex: j,
+          orderIndex: ui,
+          estimatedMin: u.estimatedMin,
+          bodyMarkdown: u.bodyMarkdown,
+          examTips: u.examTips,
+          commonMistakes: u.commonMistakes,
+          realWorldUseCases: u.realWorldUseCases,
+          keyTerms: u.keyTerms as unknown as Prisma.InputJsonValue,
+          likelyOnExam: u.likelyOnExam ?? false,
+          likelyExamScore: u.likelyExamScore ?? 0,
         },
-        update: { title: u.title, orderIndex: j, kind: u.kind },
+        update: {
+          title: u.title,
+          kind: u.kind,
+          orderIndex: ui,
+          estimatedMin: u.estimatedMin,
+          bodyMarkdown: u.bodyMarkdown,
+          examTips: u.examTips,
+          commonMistakes: u.commonMistakes,
+          realWorldUseCases: u.realWorldUseCases,
+          keyTerms: u.keyTerms as unknown as Prisma.InputJsonValue,
+          likelyOnExam: u.likelyOnExam ?? false,
+          likelyExamScore: u.likelyExamScore ?? 0,
+        },
       });
+      unitCount++;
+
+      // Knowledge checks (replace, not merge)
+      if (u.knowledgeChecks?.length) {
+        await prisma.knowledgeCheck.deleteMany({ where: { unitId: unit.id } });
+        for (const kc of u.knowledgeChecks) {
+          await prisma.knowledgeCheck.create({
+            data: {
+              unitId: unit.id,
+              prompt: kc.prompt,
+              options: kc.options as unknown as Prisma.InputJsonValue,
+              explanation: kc.explanation,
+              difficulty: kc.difficulty ?? 2,
+            },
+          });
+          kcCount++;
+        }
+      }
     }
   }
+  console.log(`  ✓ ${modCount} modules, ${unitCount} units, ${kcCount} knowledge checks`);
 
-  // Seed prompt versions used by the generation pipeline.
+  // ── Lab Guides ───────────────────────────────────────────────────────
+  let labCount = 0;
+  for (const lab of LABS) {
+    const mod = await prisma.module.findUnique({ where: { slug: lab.moduleSlug } });
+    if (!mod) continue;
+    const unit = await prisma.unit.findUnique({
+      where: { moduleId_slug: { moduleId: mod.id, slug: lab.unitSlug } },
+    });
+    if (!unit) continue;
+
+    await prisma.labGuide.upsert({
+      where: { unitId: unit.id },
+      create: {
+        unitId: unit.id,
+        title: lab.title,
+        objective: lab.objective,
+        steps: lab.steps as unknown as Prisma.InputJsonValue,
+        prerequisites: lab.prerequisites,
+        cleanupSteps: lab.cleanupSteps,
+        estimatedMin: lab.estimatedMin,
+      },
+      update: {
+        title: lab.title,
+        objective: lab.objective,
+        steps: lab.steps as unknown as Prisma.InputJsonValue,
+        prerequisites: lab.prerequisites,
+        cleanupSteps: lab.cleanupSteps,
+        estimatedMin: lab.estimatedMin,
+      },
+    });
+    labCount++;
+  }
+  console.log(`  ✓ ${labCount} lab guides`);
+
+  // ── Exam Questions ───────────────────────────────────────────────────
+  let qCount = 0;
+  for (const q of QUESTIONS) {
+    const stemKey = q.stem.slice(0, 80);
+    const exists = await prisma.examQuestion.findFirst({
+      where: { stem: { startsWith: stemKey } },
+      select: { id: true },
+    });
+    if (exists) continue;
+    await prisma.examQuestion.create({
+      data: {
+        objective: q.objective,
+        type: q.type,
+        difficulty: q.difficulty,
+        stem: q.stem,
+        caseStudy: q.caseStudy,
+        options: q.options as unknown as Prisma.InputJsonValue,
+        correctIds: q.correctIds as unknown as Prisma.InputJsonValue,
+        explanation: q.explanation,
+        distractorRationale: q.distractorRationale as unknown as Prisma.InputJsonValue,
+        references: q.references as unknown as Prisma.InputJsonValue,
+        tags: q.tags,
+        source: "EXPERT_AUTHORED",
+        reviewStatus: "APPROVED",
+        qualityScore: 0.9,
+      },
+    });
+    qCount++;
+  }
+  console.log(`  ✓ ${qCount} new exam questions seeded (total: ${await prisma.examQuestion.count()})`);
+
+  // ── Flashcards ───────────────────────────────────────────────────────
+  let fcCount = 0;
+  for (const f of FLASHCARDS) {
+    const mod = await prisma.module.findUnique({ where: { slug: f.moduleSlug } });
+    if (!mod) continue;
+    const unit = f.unitSlug
+      ? await prisma.unit.findUnique({
+          where: { moduleId_slug: { moduleId: mod.id, slug: f.unitSlug } },
+        })
+      : null;
+    const exists = await prisma.flashcard.findFirst({
+      where: { front: f.front, moduleId: mod.id },
+      select: { id: true },
+    });
+    if (exists) continue;
+    await prisma.flashcard.create({
+      data: {
+        moduleId: mod.id,
+        unitId: unit?.id,
+        front: f.front,
+        back: f.back,
+        mnemonic: f.mnemonic,
+        category: f.category,
+        difficulty: f.difficulty,
+        source: "CURATED",
+      },
+    });
+    fcCount++;
+  }
+  console.log(`  ✓ ${fcCount} new flashcards seeded (total: ${await prisma.flashcard.count()})`);
+
+  // ── Prompt versions ──────────────────────────────────────────────────
   await prisma.promptVersion.upsert({
     where: { name_version: { name: "exam_question_v1", version: "1.0.0" } },
     create: {
       name: "exam_question_v1",
       version: "1.0.0",
-      template: "see src/lib/ai/prompts.ts",
+      template: "see src/lib/ai/prompts.ts (EXAM_QUESTION_SYSTEM + few-shot)",
       active: true,
     },
     update: {},
   });
 
-  console.log("Seed complete.");
+  console.log("✓ Seed complete.");
 }
 
 main()

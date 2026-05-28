@@ -30,7 +30,11 @@ export default async function AdminPage() {
 
         <section className="mt-6 grid gap-4 md:grid-cols-4">
           <Tile label="Users" value={String(userCount)} />
-          <Tile label="Questions pending review" value={String(pendingQuestions)} />
+          <Tile
+            label="Questions pending review"
+            value={String(pendingQuestions)}
+            href="/admin/questions"
+          />
           <Tile label="Transcripts pending" value={String(transcripts)} />
           <Tile
             label="AI spend (30d)"
@@ -69,12 +73,30 @@ export default async function AdminPage() {
   );
 }
 
-function Tile({ label, value, hint }: { label: string; value: string; hint?: string }) {
-  return (
-    <div className="rounded-lg border bg-card p-5">
+function Tile({
+  label,
+  value,
+  hint,
+  href,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  href?: string;
+}) {
+  const inner = (
+    <>
       <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="mt-2 text-2xl font-semibold">{value}</div>
       {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
-    </div>
+    </>
   );
+  if (href) {
+    return (
+      <a href={href} className="rounded-lg border bg-card p-5 hover:border-azure-500 transition-colors">
+        {inner}
+      </a>
+    );
+  }
+  return <div className="rounded-lg border bg-card p-5">{inner}</div>;
 }

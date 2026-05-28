@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ExamFocusCard } from "@/components/exam-focus-card";
 import { ContentBlockRenderer } from "@/components/content-block-renderer";
+import { LabGuide } from "@/components/lab-guide";
+import { LessonMarkdown } from "@/components/lesson-markdown";
 
 export default async function UnitPage({
   params,
@@ -43,31 +45,24 @@ export default async function UnitPage({
             </div>
           </header>
 
-          <section className="prose prose-slate dark:prose-invert max-w-none">
+          <section>
             {unit.bodyMarkdown ? (
-              <div dangerouslySetInnerHTML={{ __html: unit.bodyMarkdown }} />
+              <LessonMarkdown source={unit.bodyMarkdown} />
             ) : (
-              <ContentBlockRenderer blocks={unit.blocks} />
+              <div className="prose prose-slate dark:prose-invert max-w-none">
+                <ContentBlockRenderer blocks={unit.blocks} />
+              </div>
             )}
           </section>
 
           {unit.labGuide && (
-            <section className="rounded-lg border bg-card p-5">
-              <h2 className="font-semibold">Lab walkthrough: {unit.labGuide.title}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{unit.labGuide.objective}</p>
-              <ol className="mt-4 space-y-3 text-sm">
-                {((unit.labGuide.steps as { title: string; description: string }[]) ?? []).map(
-                  (s, i) => (
-                    <li key={i} className="rounded-md border p-3">
-                      <div className="font-medium">
-                        Step {i + 1}: {s.title}
-                      </div>
-                      <p className="mt-1 text-muted-foreground">{s.description}</p>
-                    </li>
-                  ),
-                )}
-              </ol>
-            </section>
+            <LabGuide
+              title={unit.labGuide.title}
+              objective={unit.labGuide.objective}
+              prerequisites={unit.labGuide.prerequisites}
+              cleanupSteps={unit.labGuide.cleanupSteps}
+              steps={unit.labGuide.steps as never}
+            />
           )}
 
           {unit.knowledgeChecks.length > 0 && (

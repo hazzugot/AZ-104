@@ -132,7 +132,7 @@ export default async function DashboardPage() {
                   </span>
                   <Link
                     className="rounded-md border px-3 py-1 hover:bg-secondary"
-                    href={`/practice/${a.examId}?attempt=${a.id}`}
+                    href={`/practice/${a.examId}/review/${a.id}`}
                   >
                     Review
                   </Link>
