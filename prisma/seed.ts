@@ -6,10 +6,17 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { CURRICULUM } from "./data/curriculum";
 import { QUESTIONS } from "./data/questions";
+import { QUESTIONS_BATCH_2 } from "./data/questions-batch-2";
 import { FLASHCARDS } from "./data/flashcards";
+import { FLASHCARDS_BATCH_2 } from "./data/flashcards-batch-2";
 import { LABS } from "./data/labs";
+import { LABS_BATCH_2 } from "./data/labs-batch-2";
 
 const prisma = new PrismaClient();
+
+const ALL_QUESTIONS = [...QUESTIONS, ...QUESTIONS_BATCH_2];
+const ALL_FLASHCARDS = [...FLASHCARDS, ...FLASHCARDS_BATCH_2];
+const ALL_LABS = [...LABS, ...LABS_BATCH_2];
 
 async function main() {
   console.log("→ Seeding AZ-104 platform content");
@@ -115,7 +122,7 @@ async function main() {
 
   // ── Lab Guides ───────────────────────────────────────────────────────
   let labCount = 0;
-  for (const lab of LABS) {
+  for (const lab of ALL_LABS) {
     const mod = await prisma.module.findUnique({ where: { slug: lab.moduleSlug } });
     if (!mod) continue;
     const unit = await prisma.unit.findUnique({
@@ -149,7 +156,7 @@ async function main() {
 
   // ── Exam Questions ───────────────────────────────────────────────────
   let qCount = 0;
-  for (const q of QUESTIONS) {
+  for (const q of ALL_QUESTIONS) {
     const stemKey = q.stem.slice(0, 80);
     const exists = await prisma.examQuestion.findFirst({
       where: { stem: { startsWith: stemKey } },
@@ -180,7 +187,7 @@ async function main() {
 
   // ── Flashcards ───────────────────────────────────────────────────────
   let fcCount = 0;
-  for (const f of FLASHCARDS) {
+  for (const f of ALL_FLASHCARDS) {
     const mod = await prisma.module.findUnique({ where: { slug: f.moduleSlug } });
     if (!mod) continue;
     const unit = f.unitSlug

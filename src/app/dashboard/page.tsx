@@ -2,6 +2,8 @@ import { Nav } from "@/components/nav";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { recommendUnits } from "@/lib/adaptive";
+import { evaluateAchievements } from "@/lib/achievements";
+import { AchievementGrid } from "@/components/achievement-grid";
 import { ExamObjective } from "@prisma/client";
 import Link from "next/link";
 
@@ -33,7 +35,7 @@ export default async function DashboardPage() {
   }
 
   const userId = (session.user as { id: string }).id;
-  const [confidence, recentAttempts, recommendations, dueFlashcards, streak] =
+  const [confidence, recentAttempts, recommendations, dueFlashcards, streak, achievements] =
     await Promise.all([
       prisma.topicConfidence.findMany({ where: { userId } }),
       prisma.examAttempt.findMany({
@@ -45,6 +47,7 @@ export default async function DashboardPage() {
       recommendUnits(userId, 4),
       prisma.flashcardReview.count({ where: { userId, dueAt: { lte: new Date() } } }),
       prisma.user.findUnique({ where: { id: userId }, select: { streakDays: true } }),
+      evaluateAchievements(userId),
     ]);
 
   const masteryByObj = new Map(confidence.map((c) => [c.objective, c.mastery]));
@@ -85,6 +88,8 @@ export default async function DashboardPage() {
             })}
           </div>
         </section>
+
+        <AchievementGrid achievements={achievements} />
 
         <section>
           <h2 className="mb-4 text-lg font-semibold">Next up</h2>

@@ -4,10 +4,11 @@ import { ModeToggle } from "./mode-toggle";
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/learn", label: "Learn" },
+  { href: "/labs", label: "Labs" },
   { href: "/practice", label: "Practice" },
   { href: "/flashcards", label: "Flashcards" },
-  { href: "/study-plan", label: "Study plan" },
-  { href: "/tutor", label: "AI tutor" },
+  { href: "/study-plan", label: "Plan" },
+  { href: "/tutor", label: "Tutor" },
 ];
 
 export function Nav() {
