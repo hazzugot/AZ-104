@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
+import { GlobalSearch } from "./global-search";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/learn", label: "Learn" },
   { href: "/labs", label: "Labs" },
   { href: "/practice", label: "Practice" },
-  { href: "/flashcards", label: "Flashcards" },
+  { href: "/flashcards", label: "Cards" },
   { href: "/study-plan", label: "Plan" },
   { href: "/tutor", label: "Tutor" },
+  { href: "/exam-blueprint", label: "Blueprint" },
 ];
 
 export function Nav() {
@@ -33,6 +35,7 @@ export function Nav() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <GlobalSearch />
           <ModeToggle />
           <Link
             href="/login"

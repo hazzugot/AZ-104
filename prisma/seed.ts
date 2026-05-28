@@ -7,14 +7,16 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { CURRICULUM } from "./data/curriculum";
 import { QUESTIONS } from "./data/questions";
 import { QUESTIONS_BATCH_2 } from "./data/questions-batch-2";
+import { QUESTIONS_BATCH_3 } from "./data/questions-batch-3";
 import { FLASHCARDS } from "./data/flashcards";
 import { FLASHCARDS_BATCH_2 } from "./data/flashcards-batch-2";
 import { LABS } from "./data/labs";
 import { LABS_BATCH_2 } from "./data/labs-batch-2";
+import { KNOWLEDGE_CHECKS } from "./data/knowledge-checks";
 
 const prisma = new PrismaClient();
 
-const ALL_QUESTIONS = [...QUESTIONS, ...QUESTIONS_BATCH_2];
+const ALL_QUESTIONS = [...QUESTIONS, ...QUESTIONS_BATCH_2, ...QUESTIONS_BATCH_3];
 const ALL_FLASHCARDS = [...FLASHCARDS, ...FLASHCARDS_BATCH_2];
 const ALL_LABS = [...LABS, ...LABS_BATCH_2];
 
@@ -118,7 +120,39 @@ async function main() {
       }
     }
   }
-  console.log(`  ✓ ${modCount} modules, ${unitCount} units, ${kcCount} knowledge checks`);
+  console.log(`  ✓ ${modCount} modules, ${unitCount} units, ${kcCount} knowledge checks from curriculum`);
+
+  // ── Supplementary Knowledge Checks (knowledge-checks.ts) ─────────────
+  let supplementalKc = 0;
+  for (const [key, checks] of Object.entries(KNOWLEDGE_CHECKS)) {
+    const [moduleSlug, unitSlug] = key.split("/");
+    if (!moduleSlug || !unitSlug) continue;
+    const mod = await prisma.module.findUnique({ where: { slug: moduleSlug } });
+    if (!mod) continue;
+    const unit = await prisma.unit.findUnique({
+      where: { moduleId_slug: { moduleId: mod.id, slug: unitSlug } },
+    });
+    if (!unit) continue;
+
+    for (const kc of checks) {
+      const exists = await prisma.knowledgeCheck.findFirst({
+        where: { unitId: unit.id, prompt: kc.prompt },
+        select: { id: true },
+      });
+      if (exists) continue;
+      await prisma.knowledgeCheck.create({
+        data: {
+          unitId: unit.id,
+          prompt: kc.prompt,
+          options: kc.options as unknown as Prisma.InputJsonValue,
+          explanation: kc.explanation,
+          difficulty: kc.difficulty ?? 2,
+        },
+      });
+      supplementalKc++;
+    }
+  }
+  console.log(`  ✓ ${supplementalKc} supplementary knowledge checks`);
 
   // ── Lab Guides ───────────────────────────────────────────────────────
   let labCount = 0;

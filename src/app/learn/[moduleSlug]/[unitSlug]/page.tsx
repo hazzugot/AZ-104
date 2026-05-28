@@ -6,6 +6,7 @@ import { ExamFocusCard } from "@/components/exam-focus-card";
 import { ContentBlockRenderer } from "@/components/content-block-renderer";
 import { LabGuide } from "@/components/lab-guide";
 import { LessonMarkdown } from "@/components/lesson-markdown";
+import { KnowledgeChecks } from "@/components/knowledge-check";
 
 export default async function UnitPage({
   params,
@@ -66,16 +67,15 @@ export default async function UnitPage({
           )}
 
           {unit.knowledgeChecks.length > 0 && (
-            <section>
-              <h2 className="font-semibold">Knowledge check</h2>
-              <ul className="mt-3 space-y-3">
-                {unit.knowledgeChecks.map((k) => (
-                  <li key={k.id} className="rounded-lg border bg-card p-4 text-sm">
-                    <p className="font-medium">{k.prompt}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <KnowledgeChecks
+              checks={unit.knowledgeChecks.map((k) => ({
+                id: k.id,
+                prompt: k.prompt,
+                options: k.options as { id: string; text: string; isCorrect: boolean; rationale?: string }[],
+                explanation: k.explanation,
+                difficulty: k.difficulty,
+              }))}
+            />
           )}
         </article>
 
